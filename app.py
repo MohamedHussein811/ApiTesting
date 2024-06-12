@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import numpy as np
 from PIL import Image
-import tensorflow as tf
+import tflite_runtime.interpreter as tflite
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
@@ -28,7 +28,7 @@ def load_tf_lite_models():
     for key, path in model_paths.items():
         if models[key] is None:
             print(f"Loading {key} from {path}")
-            models[key] = tf.lite.Interpreter(model_path=path)
+            models[key] = tflite.Interpreter(model_path=path)
             models[key].allocate_tensors()
             print(f"{key} loaded")
 
@@ -41,7 +41,9 @@ def process_and_predict_image(file, model_key):
     output_details = models[model_key].get_output_details()
 
     input_shape = input_details[0]['shape']
-    models[model_key].set_tensor(input_details[0]['index'], [img_array])
+    img_array = np.expand_dims(img_array, axis=0).astype(np.float32)  # Add batch dimension
+
+    models[model_key].set_tensor(input_details[0]['index'], img_array)
 
     models[model_key].invoke()
     output_data = models[model_key].get_tensor(output_details[0]['index'])
