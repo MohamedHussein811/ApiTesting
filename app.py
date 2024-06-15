@@ -41,9 +41,7 @@ def process_and_predict_image(file, model_key):
     output_details = models[model_key].get_output_details()
 
     input_shape = input_details[0]['shape']
-    img_array = np.expand_dims(img_array, axis=0).astype(np.float32)  # Add batch dimension
-
-    models[model_key].set_tensor(input_details[0]['index'], img_array)
+    models[model_key].set_tensor(input_details[0]['index'], [img_array])
 
     models[model_key].invoke()
     output_data = models[model_key].get_tensor(output_details[0]['index'])
@@ -64,7 +62,7 @@ def predict(model_key):
 
 if __name__ == '__main__':
     load_tf_lite_models()
-    app.run()
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
 
 # Add the line below for Vercel to recognize the app
 app = app
