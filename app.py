@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import numpy as np
@@ -60,9 +61,10 @@ def predict(model_key):
         'prediction_percentages': prediction_percentages
     })
 
+@app.route('/')
+def index():
+    return "Hello, the server is running!"
+
 if __name__ == '__main__':
     load_tf_lite_models()
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
-
-# Add the line below for Vercel to recognize the app
-app = app
