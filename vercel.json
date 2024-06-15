@@ -1,9 +1,6 @@
 {
   "builds": [
-    { "src": "app.py", "use": "@vercel/python" }
-  ],
-  "hooks": {
-    "build": "sh post_install.sh"
-  }
+    { "src": "Dockerfile", "use": "@vercel/docker" }
+  ]
 }
 
