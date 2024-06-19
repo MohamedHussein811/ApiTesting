@@ -63,7 +63,7 @@ def predict(model_key):
 
 @app.route('/')
 def index():
-    return "Hello, the server is running!"
+    return "Hello, the server is running!."
 
 if __name__ == '__main__':
     load_tf_lite_models()
